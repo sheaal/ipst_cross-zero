@@ -1,5 +1,6 @@
 import { useGameContext } from "@/shared/store";
 import { ICell } from "@/shared/interfaces";
+import { useState } from "react";
 
 const useCellUseCase = () => {
     const { 
@@ -7,8 +8,11 @@ const useCellUseCase = () => {
         setBoard, 
         currentPlayer, 
         setCurrentPlayer, 
-        winner 
+        winner, 
     } = useGameContext();
+
+     // Создаем состояние для хранения количества ходов
+    const [moveCount, setMoveCount] = useState(1);  
 
     const handleCellClick = (cell: ICell): void => {
         // Проверка на наличие победителя
@@ -23,6 +27,8 @@ const useCellUseCase = () => {
             console.log("Ячейка уже занята. Ход невозможен");
             return;
         }
+        // Увеличиваем счетчик ходов
+        setMoveCount(moveCount + 1);  
 
         // Обновление состояния доски
         const newBoard = board.map(c => c.id === cell.id ? { ...c, player: currentPlayer } : c);
@@ -30,9 +36,13 @@ const useCellUseCase = () => {
 
         // Смена игрока
         setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X');
+
+         // Выводим текущее количество ходов в консоль
+        console.log(`Сделано ходов: ${moveCount}`);  
     }
 
     return {
+        moveCount,
         handleCellClick
     };
 };

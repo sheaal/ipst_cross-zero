@@ -7,14 +7,14 @@ const useBoardUseCase = () => {
 
     const checkWinner = (): IWinner => {
         const winningLines = [
-            [0, 1, 2],   // Первая строка
-            [3, 4, 5],   // Вторая строка
-            [6, 7, 8],   // Третья строка
-            [0, 3, 6],   // Первый столбец
-            [1, 4, 7],   // Второй столбец
-            [2, 5, 8],   // Третий столбец
-            [0, 4, 8],   // Главная диагональ
-            [2, 4, 6]    // Побочная диагональ
+            [0, 1, 2],   // Горизонтальные линии
+            [3, 4, 5],   
+            [6, 7, 8],   
+            [0, 3, 6],   // Вертикальные линии
+            [1, 4, 7],   
+            [2, 5, 8],   
+            [0, 4, 8],   // Диагонали
+            [2, 4, 6]    
         ];
 
         for (const line of winningLines) {
@@ -28,6 +28,12 @@ const useBoardUseCase = () => {
             ) {
                 return board[first].player as IPlayer;
             }
+        }
+        
+        // Проверка на ничью
+        const isDraw = board.every(cell => cell.player !== null);
+        if (isDraw) {
+            console.log('Ничья!');
         }
 
         return null;
