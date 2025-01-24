@@ -1,41 +1,36 @@
-// board/index.ts
 import { useGameContext } from "@/shared/store";
 import { useEffect } from "react";
-import { IWinner } from "@/shared/interfaces";
+import { IWinner, IPlayer } from "@/shared/interfaces";
 
 const useBoardUseCase = () => {
     const { board, setWinner } = useGameContext();
 
-    const checkWinner = (): IWinner | null => {
-        // Определяем выигрышные комбинации
-        const winningCombinations = [
-            // Горизонтальные комбинации
-            ['0-0', '0-1', '0-2'],
-            ['1-0', '1-1', '1-2'],
-            ['2-0', '2-1', '2-2'],
-            // Вертикальные комбинации
-            ['0-0', '1-0', '2-0'],
-            ['0-1', '1-1', '2-1'],
-            ['0-2', '1-2', '2-2'],
-            // Диагональные комбинации
-            ['0-0', '1-1', '2-2'],
-            ['0-2', '1-1', '2-0'],
+    const checkWinner = (): IWinner => {
+        const winningLines = [
+            [0, 1, 2],   // Первая строка
+            [3, 4, 5],   // Вторая строка
+            [6, 7, 8],   // Третья строка
+            [0, 3, 6],   // Первый столбец
+            [1, 4, 7],   // Второй столбец
+            [2, 5, 8],   // Третий столбец
+            [0, 4, 8],   // Главная диагональ
+            [2, 4, 6]    // Побочная диагональ
         ];
 
-		for (const combination of winningCombinations) {
-            const [a, b, c] = combination;
-
-            // Проверяем значения в ячейках по идентификаторам
-            const valueA = board[a];
-            const valueB = board[b];
-            const valueC = board[c];
-
-            if (valueA && valueA === valueB && valueB === valueC) {
-                return { winner: valueA, line: `combination-${a}-${b}-${c}` };
+        for (const line of winningLines) {
+            const [first, second, third] = line;
+            
+            // Проверяем наличие игрока и совпадение символов
+            if (
+                board[first].player && 
+                board[first].player === board[third].player && 
+                board[first].player === board[second].player
+            ) {
+                return board[first].player as IPlayer;
             }
         }
 
-        return null; // Если победителя нет
+        return null;
     };
 
     useEffect(() => {
